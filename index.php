@@ -4,7 +4,7 @@ class Auth {
 	const ERR_DB = 'database error';
 	const ERR_SVR = 'server error';
 	protected $mysql;
-	public $error;
+	public $error = '';
 	public $cookieValid = 10 * 60;
 	
 	public function __construct($dbName, $dbUser, $dbPwd) {
