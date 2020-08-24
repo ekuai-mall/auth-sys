@@ -6,7 +6,7 @@
  * 一个php鉴权系统插件（类）
  * @author kuai
  * @copyright ekuai 2020
- * @version 1.2
+ * @version 1.3
  */
 
 class Auth {
@@ -91,7 +91,7 @@ class Auth {
 		$res = $this->query("SELECT * FROM `ekm_auth_user` WHERE `user` = ? AND `pass` = ?", [$user, $pass]);
 		if ($res === false) {
 			$ret = $this->ret(120001, self::ERR_DB);
-		} else if (!empty($res)) {
+		} else if (empty($res)) {
 			$ret = $this->ret(120002, 'wrong username or password');
 		} else {
 			$res = $this->query("UPDATE `ekm_auth_user` SET `cookie` = ?,`login_time` = ?,`ip` = ? WHERE `id` = ?;",
