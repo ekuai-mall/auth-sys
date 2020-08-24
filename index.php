@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Auth System
+ *
+ * 一个php鉴权系统插件（类）
+ * @author kuai
+ * @copyright ekuai 2020
+ * @version 1.2
+ */
+
 class Auth {
 	const ERR_DB = 'database error';
 	const ERR_SVR = 'server error';
@@ -68,7 +77,7 @@ class Auth {
 				$res = $this->query("SELECT * FROM `ekm_auth_user` WHERE `user` = ?", [$user]);
 				if ($res === false) {
 					$ret = $this->ret(110004, self::ERR_DB);
-				} else if (!empty($res)) {
+				} else if (empty($res)) {
 					$ret = $this->ret(110005, self::ERR_SVR);
 				} else {
 					$ret = $this->ret(0, $res[0]['cookie']);
@@ -93,7 +102,7 @@ class Auth {
 				$res = $this->selectUser($user);
 				if ($res === false) {
 					$ret = $this->ret(120004, self::ERR_DB);
-				} else if (!empty($res)) {
+				} else if (empty($res)) {
 					$ret = $this->ret(120005, self::ERR_SVR);
 				} else {
 					$ret = $this->ret(0, $res[0]['cookie']);
@@ -118,7 +127,7 @@ class Auth {
 				$res = $this->selectUser($res[0]['user']);
 				if ($res === false) {
 					$ret = $this->ret(130004, self::ERR_DB);
-				} else if (!empty($res)) {
+				} else if (empty($res)) {
 					$ret = $this->ret(130005, self::ERR_SVR);
 				} else {
 					$ret = $this->ret(0, $res[0]['cookie']);
@@ -132,7 +141,7 @@ class Auth {
 		$res = $this->query("SELECT * FROM `ekm_auth_user` WHERE `user` = ? AND `pass` = ?", [$user, $pass]);
 		if ($res === false) {
 			$ret = $this->ret(140001, self::ERR_DB);
-		} else if (!empty($res)) {
+		} else if (empty($res)) {
 			$ret = $this->ret(140002, 'wrong username or password');
 		} else {
 			$res = $this->query("UPDATE `ekm_auth_user` SET `pass` = ?,`ip` = ? WHERE `id` = ?;",
@@ -143,7 +152,7 @@ class Auth {
 				$res = $this->selectUser($user);
 				if ($res === false) {
 					$ret = $this->ret(140004, self::ERR_DB);
-				} else if (!empty($res)) {
+				} else if (empty($res)) {
 					$ret = $this->ret(140005, self::ERR_SVR);
 				} else {
 					$ret = $this->ret(0, 'success');
