@@ -15,4 +15,4 @@ CREATE TABLE `ekm_auth_user` (
   `login_time` int(11) NOT NULL,
   `ip` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

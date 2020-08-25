@@ -6,7 +6,7 @@
  * 一个php鉴权系统插件（类）
  * @author kuai
  * @copyright ekuai 2020
- * @version 1.3
+ * @version 1.4
  */
 
 class Auth {
@@ -60,7 +60,7 @@ class Auth {
 	}
 	
 	private function selectUser($user) {
-		return $this->query("SELECT * FROM `ekm_auth_user` WHERE `user` = ?", [$user]);
+		return $this->query("SELECT `id`,`user`,`cookie`,`login_time` FROM `ekm_auth_user` WHERE `user` = ?", [$user]);
 	}
 	
 	public function reg($user, $pass) {
@@ -74,13 +74,13 @@ class Auth {
 			if ($res === false) {
 				$ret = $this->ret(110003, self::ERR_DB);
 			} else {
-				$res = $this->query("SELECT * FROM `ekm_auth_user` WHERE `user` = ?", [$user]);
+				$res = $this->selectUser($user);
 				if ($res === false) {
 					$ret = $this->ret(110004, self::ERR_DB);
 				} else if (empty($res)) {
 					$ret = $this->ret(110005, self::ERR_SVR);
 				} else {
-					$ret = $this->ret(0, $res[0]['cookie']);
+					$ret = $this->ret(0, $res[0]['user']);
 				}
 			}
 		}
@@ -105,7 +105,7 @@ class Auth {
 				} else if (empty($res)) {
 					$ret = $this->ret(120005, self::ERR_SVR);
 				} else {
-					$ret = $this->ret(0, $res[0]['cookie']);
+					$ret = $this->ret(0, $res[0]);
 				}
 			}
 		}
@@ -130,7 +130,7 @@ class Auth {
 				} else if (empty($res)) {
 					$ret = $this->ret(130005, self::ERR_SVR);
 				} else {
-					$ret = $this->ret(0, $res[0]['cookie']);
+					$ret = $this->ret(0, $res[0]);
 				}
 			}
 		}
