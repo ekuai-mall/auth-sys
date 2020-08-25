@@ -6,7 +6,7 @@
  * 一个php鉴权系统插件（类）
  * @author kuai
  * @copyright ekuai 2020
- * @version 1.4
+ * @version 1.5
  */
 
 class Auth {
@@ -80,7 +80,7 @@ class Auth {
 				} else if (empty($res)) {
 					$ret = $this->ret(110005, self::ERR_SVR);
 				} else {
-					$ret = $this->ret(0, $res[0]['user']);
+					$ret = $this->ret(0, $res[0]);
 				}
 			}
 		}
