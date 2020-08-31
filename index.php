@@ -6,7 +6,7 @@
  * 一个php鉴权系统插件（类）
  * @author kuai
  * @copyright ekuai 2020
- * @version 1.6
+ * @version 2.0
  */
 
 class Auth {
@@ -174,7 +174,7 @@ class Auth {
 		} else if (empty($res)) {
 			$ret = $this->ret(150002, self::ERR_COOKIE_INVALID);
 		} else {
-			$ret = $this->ret(0, $res['info']);
+			$ret = $this->ret(0, $res[0]['info'] ? $res[0]['info'] : '{}');
 		}
 		return $ret;
 	}
@@ -191,13 +191,13 @@ class Auth {
 			if ($res === false) {
 				$ret = $this->ret(160003, self::ERR_DB);
 			} else {
-				$res = $this->query("SELECT * FROM `ekm_auth_user` WHERE `id` = ? AND `cookie` = ?", [$userId, $cookie]);
+				$res = $this->selectCookie($userId, $cookie);
 				if ($res === false) {
 					$ret = $this->ret(160004, self::ERR_DB);
 				} else if (empty($res)) {
-					$ret = $this->ret(160005, 'cookie invalid');
+					$ret = $this->ret(160005, self::ERR_COOKIE_INVALID);
 				} else {
-					$ret = $this->ret(0, $res['info']);
+					$ret = $this->ret(0, $res[0]['info']);
 				}
 			}
 		}
@@ -216,23 +216,35 @@ class Auth {
 		return $ret;
 	}
 	
-	public function setWechat($userId, $cookie, $wechat) {
+	public function getUserFromSvr($userId, $cookie) {
+		$res = $this->selectCookie($userId, $cookie);
+		if ($res === false) {
+			$ret = $this->ret(150001, self::ERR_DB);
+		} else if (empty($res)) {
+			$ret = $this->ret(150002, self::ERR_COOKIE_INVALID);
+		} else {
+			$ret = $this->ret(0, $res);
+		}
+		return $ret;
+	}
+	
+	public function setWechat($userId, $cookie, $wechat, $openid) {
 		$res = $this->selectCookie($userId, $cookie);
 		if ($res === false) {
 			$ret = $this->ret(160001, self::ERR_DB);
 		} else if (empty($res)) {
 			$ret = $this->ret(160002, self::ERR_COOKIE_INVALID);
 		} else {
-			$res = $this->query("UPDATE `ekm_auth_user` SET `wechat` = ?,`login_time` = ? WHERE `id` = ?;",
-				[$wechat, time(), $userId]);
+			$res = $this->query("UPDATE `ekm_auth_user` SET `wechat` = ?, `openid` = ?, `login_time` = ? WHERE `id` = ?;",
+				[$wechat, $openid, time(), $userId]);
 			if ($res === false) {
 				$ret = $this->ret(160003, self::ERR_DB);
 			} else {
-				$res = $this->query("SELECT * FROM `ekm_auth_user` WHERE `id` = ? AND `cookie` = ?", [$userId, $cookie]);
+				$res = $this->selectCookie($userId, $cookie);
 				if ($res === false) {
 					$ret = $this->ret(160004, self::ERR_DB);
 				} else if (empty($res)) {
-					$ret = $this->ret(160005, 'cookie invalid');
+					$ret = $this->ret(160005, self::ERR_COOKIE_INVALID);
 				} else {
 					$ret = $this->ret(0, $res['wechat']);
 				}
