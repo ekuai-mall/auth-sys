@@ -6,7 +6,7 @@
  * 一个php鉴权系统插件（类）
  * @author kuai
  * @copyright ekuai 2020
- * @version 2.1
+ * @version 2.2
  */
 
 class Auth {
@@ -139,12 +139,12 @@ class Auth {
 		$res = $this->selectCookie($userId, $cookie);
 		if ($res === false) {
 			$ret = $this->ret(130001, self::ERR_DB);
-		} else if (!empty($res) || $res[0]['login_time'] + $this->cookieValid < time()) {
+		} else if (empty($res) || $res[0]['login_time'] + $this->cookieValid < time()) {
 			$ret = $this->ret(130002, self::ERR_COOKIE_INVALID);
 		} else {
-			$res = $this->query("UPDATE `ekm_auth_user` SET `login_time` = ?,`ip` = ? WHERE `id` = ?;",
+			$res1 = $this->query("UPDATE `ekm_auth_user` SET `login_time` = ?,`ip` = ? WHERE `id` = ?;",
 				[time(), $this->getIP(), $res[0]['id']]);
-			if ($res === false) {
+			if ($res1 === false) {
 				$ret = $this->ret(130003, self::ERR_DB);
 			} else {
 				$res = $this->selectUser($res[0]['user']);
@@ -229,7 +229,7 @@ class Auth {
 		} else if (empty($res)) {
 			$ret = $this->ret(150002, self::ERR_COOKIE_INVALID);
 		} else {
-			$ret = $this->ret(0, $res['wechat']);
+			$ret = $this->ret(0, $res[0]['wechat']);
 		}
 		return $ret;
 	}
@@ -264,7 +264,7 @@ class Auth {
 				} else if (empty($res)) {
 					$ret = $this->ret(160005, self::ERR_COOKIE_INVALID);
 				} else {
-					$ret = $this->ret(0, $res['wechat']);
+					$ret = $this->ret(0, $res[0]['wechat']);
 				}
 			}
 		}
