@@ -6,7 +6,7 @@
  * 一个php鉴权系统插件（类）
  * @author kuai
  * @copyright ekuai 2020
- * @version 2.2
+ * @version 2.3
  */
 
 class Auth {
@@ -121,7 +121,7 @@ class Auth {
 		$res = $this->selectCookie($userId, $cookie);
 		if ($res === false) {
 			$ret = $this->ret(180001, self::ERR_DB);
-		} else if (!empty($res)) {
+		} else if (empty($res)) {
 			$ret = $this->ret(180002, self::ERR_COOKIE_INVALID);
 		} else {
 			$res = $this->query("UPDATE `ekm_auth_user` SET `cookie` = '',`ip` = ? WHERE `id` = ?;",
