@@ -17,6 +17,8 @@ CREATE TABLE `ekm_auth_user`
     `ip`         text    NOT NULL,
     `wechat`     text,
     `openid`     text,
+	`phone`      text,
+	`code`       text,
     `info`       text,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
